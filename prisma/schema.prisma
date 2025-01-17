@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String?
+  name       String?
+  role       Role     @default(USER)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+
+  phoneNumber     String?
+  defaultLanguage String? @default("en")
+}
+
+model Restaurant {
+  id         String         @id @default(uuid())
+  name       String
+  address    String?
+  postalCode String?
+  vatNumber  String?
+  userName   String?
+  image      String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  isActive   Boolean        @default(true)
+  plan       RestaurantPlan @default(FREE)
+
+  contactEmail  String?
+  contactName   String?
+  contactNumber String?
+
+  deletedAt DateTime?
+
+  // relationships
+  restaurantTypeId String
+  RestaurantType   RestaurantType @relation(fields: [restaurantTypeId], references: [id])
+}
+
+model RestaurantType {
+  id String @id @default(uuid())
+
+  //relationships
+  restaurants  Restaurant[]
+  translations Translation[] @relation("translations")
+}
+
+model Translation {
+  id String @id @default(uuid())
+
+  name        String
+  lang        String  @default("en")
+  description String?
+
+  // Polymorphic fields
+  translatableType String?
+  translatableId   String?
+
+  // Relationships 
+  restaurantType RestaurantType? @relation("translations", fields: [translatableId], references: [id])
+}
+
+model Service {
+  id String @id @default(uuid())
+
+  name ServiceType @default(DINE_IN)
+}
+
+enum Role {
+  USER
+  ADMIN
+  RESTAURANT
+}
+
+enum ServiceType {
+  DINE_IN
+  TAKEOUT
+  DELIVERY
+}
+
+enum RestaurantPlan {
+  FREE
+  PREMIUM
+}
