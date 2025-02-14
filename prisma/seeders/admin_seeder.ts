@@ -1,5 +1,5 @@
 import { PrismaClient, Role } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 export async function seedAdmin(prisma: PrismaClient) {
   await prisma.$transaction(async (transactionPrisma) => {
@@ -17,6 +17,7 @@ export async function seedAdmin(prisma: PrismaClient) {
           role: Role.ADMIN,
           isVerified: true,
           isActive: true,
+          verifiedAt: new Date(),
         },
       });
     }

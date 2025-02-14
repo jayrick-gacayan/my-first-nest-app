@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CatsModule } from './cats/cats.module';
-import { RestaurantTypeModule } from './restaurant_type/restaurant_type.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { DatabaseModule } from './database/database.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
-  imports: [CatsModule, RestaurantTypeModule, AppModule],
+  imports: [AuthModule, UsersModule, DatabaseModule, MailModule],
 })
 export class AppModule {}

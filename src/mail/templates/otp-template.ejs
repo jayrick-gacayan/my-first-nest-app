@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>Hi <%= name %>,</p>
+    <p>
+      Thank you for signing up with Join Bitte. To complete your registration,
+      please use the One-Time Password (OTP) below to verify your account:
+    </p>
+    
+    <p>To get started using Join Bitte, please confirm your account below:</p>
+    <p>Your OTP: <%= otp %></p>
+
+    <a style='display:block; margin:auto; width: auto;' href="<%= verification_url %>">
+      <%= verification_url %>
+    </a>
+    
+    <p>
+      Please enter it on the verification page to confirm your account. If you
+      didn't request this verification, please ignore this email or contact our
+      support team if you have any concerns.
+    </p>
+
+    <p>Thank you,</p>
+    <p>Join Bitte Team</p>
+  </body>
+
+</html>

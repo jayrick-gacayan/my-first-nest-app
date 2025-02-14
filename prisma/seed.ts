@@ -1,14 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import { seedAdmin } from './seeders/admin_seeder';
-import { seedRestaurantType } from './seeders/restaurant_type_seeder';
-import { seedServiceType } from './seeders/service_type_seeder';
+// import { seedRestaurantType } from './seeders/restaurant_type_seeder';
+// import { seedServiceType } from './seeders/service_type_seeder';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await seedAdmin(prisma);
-  await seedRestaurantType(prisma);
-  await seedServiceType(prisma);
+  // await seedRestaurantType(prisma);
+  // await seedServiceType(prisma);
 }
 
 main()

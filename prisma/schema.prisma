@@ -14,86 +14,73 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  password   String?
-  name       String?
-  role       Role     @default(USER)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  isVerified Boolean  @default(false)
-  isActive   Boolean  @default(true)
+  id       String  @id @default(uuid())
+  email    String  @unique
+  password String?
+  name     String?
+
+  role Role @default(USER)
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  verifiedAt DateTime?
+
+  isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
 
   phoneNumber     String?
   defaultLanguage String? @default("en")
+
+  userVerification UserVerification?
 }
 
-model Restaurant {
-  id         String         @id @default(uuid())
-  name       String
-  address    String?
-  postalCode String?
-  vatNumber  String?
-  userName   String?
-  image      String?
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  isActive   Boolean        @default(true)
-  plan       RestaurantPlan @default(FREE)
+model UserVerification {
+  otpCode String
+  token   String
 
-  contactEmail  String?
-  contactName   String?
-  contactNumber String?
+  userId String @id
 
-  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiredAt DateTime
+  usedAt    DateTime?
 
-  // relationships
-  restaurantTypeId String
-  RestaurantType   RestaurantType @relation(fields: [restaurantTypeId], references: [id])
+  // Relationship with User
+  user User @relation(fields: [userId], references: [id])
 }
 
-model RestaurantType {
-  id String @id @default(uuid())
+// model Category {
+//   id String @id @default(uuid())
 
-  //relationships
-  restaurants  Restaurant[]
-  translations Translation[] @relation("translations")
-}
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   deletedAt DateTime?
 
-model Translation {
-  id String @id @default(uuid())
+//   //relationships
+//   categoryId    String?
+//   category      Category?  @relation("category", fields: [categoryId], references: [id])
+//   subCategories Category[] @relation("category")
 
-  name        String
-  lang        String  @default("en")
-  description String?
+//   translations Translation[] @relation("translations")
+// }
 
-  // Polymorphic fields
-  translatableType String?
-  translatableId   String?
+// model Translation {
+//   id String @id @default(uuid())
 
-  // Relationships 
-  restaurantType RestaurantType? @relation("translations", fields: [translatableId], references: [id])
-}
+//   name        String
+//   lang        String  @default("en")
+//   description String?
 
-model Service {
-  id String @id @default(uuid())
+//   // Polymorphic fields
+//   translatableType String?
+//   translatableId   String?
 
-  name ServiceType @default(DINE_IN)
-}
+//   // Relationships 
+//   category Category? @relation("translations", fields: [translatableId], references: [id])
+// }
 
 enum Role {
   USER
   ADMIN
   RESTAURANT
-}
-
-enum ServiceType {
-  DINE_IN
-  TAKEOUT
-  DELIVERY
-}
-
-enum RestaurantPlan {
-  FREE
-  PREMIUM
 }
