@@ -5,6 +5,6 @@ import { DatabaseModule } from './database/database.module';
 import { MailModule } from './mail/mail.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, DatabaseModule, MailModule],
+  imports: [UsersModule, AuthModule, DatabaseModule, MailModule],
 })
 export class AppModule {}

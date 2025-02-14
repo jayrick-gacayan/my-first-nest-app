@@ -51,7 +51,7 @@ export class UsersService {
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     omitPassword: boolean = true,
   ) {
-    const user = this.databaseService.user.findUnique({
+    const user = await this.databaseService.user.findUnique({
       where: userWhereUniqueInput,
       omit: { password: omitPassword },
       include: { userVerification: true },

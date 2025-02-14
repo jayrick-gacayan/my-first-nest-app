@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Role } from '@prisma/client';
 import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from 'src/auth/public/public.decorator';
-import { Roles } from './roles.decorator';
+import { ROLES_KEY } from './roles.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -21,11 +22,19 @@ export class RolesGuard implements CanActivate {
 
     if (isPublic) return true;
 
-    const roles = this.reflector.get(Roles, getHandler);
-    if (!roles) return true;
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (!requiredRoles) {
+      return true; // No role restriction
+    }
 
     const request = context.switchToHttp().getRequest();
+    const user = request.user;
 
-    return roles.some((role) => role === request.user.role);
+    console.log('user', user);
+    return true;
   }
 }

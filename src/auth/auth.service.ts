@@ -15,19 +15,21 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async validateUser(email: string, password: string) {
-    const user = await this.databaseService.user.findUnique({
-      where: { email: email },
-      include: { userVerification: true },
+  async validateUser(email: string, userPassword: string) {
+    const user = await this.databaseService.user.findFirst({
+      where: { email: { equals: email, mode: 'insensitive' } },
     });
 
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) throw new UnauthorizedException();
 
-    const isMatch: boolean = bcrypt.compareSync(password, user.password);
+    const isMatch: boolean = bcrypt.compareSync(userPassword, user.password);
 
-    if (isMatch) throw new UnauthorizedException('Invalid credentials');
+    if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-    return user as Omit<User, 'password'>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+
+    return rest;
   }
 
   async login(user: Omit<User, 'password'>) {

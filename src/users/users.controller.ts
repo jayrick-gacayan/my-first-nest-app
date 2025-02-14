@@ -5,20 +5,23 @@ import {
   Param,
   Put,
   ValidationPipe,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { Roles } from './roles/roles.decorator';
 import { Role } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @Get(':id')
-  async user(@Param('id') id: string) {
-    return this.userService.user({ id: id });
+  @UseGuards(JwtAuthGuard)
+  @Get(':email')
+  async user(@Request() req, @Param('email') email: string) {
+    return this.userService.user({ email: email });
   }
 
   @Put(':id')
